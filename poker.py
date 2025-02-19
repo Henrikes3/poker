@@ -137,7 +137,7 @@ def verificar_combinacoes():
             reiniciar_jogo()
             return
     else:
-        carta_mais_alta = max(cartas_sorteadas_total, key=lambda carta: valor_numerico_carta(carta))
+        carta_mais_alta = max(cartas_sorteadas_total[:2], key=lambda carta: valor_numerico_carta(carta))
         valor_carta_mais_alta = carta_mais_alta[3]
         naipe_carta_mais_alta = carta_mais_alta[1]
         messagebox.showinfo("Maior Carta",f"{valor_carta_mais_alta} de {naipe_carta_mais_alta}")
