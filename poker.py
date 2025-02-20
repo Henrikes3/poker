@@ -58,21 +58,24 @@ def verificar_royal_flush(cartas_sorteadas_total):
     return False, None
 
 def verificar_straight_flush(cartas_sorteadas_total):
+    # Extrair naipes e números das cartas
     naipes = [carta[1] for carta in cartas_sorteadas_total]
-    numeros = sorted(int(carta[0]) for carta in cartas_sorteadas_total)
-    for i in range(len(numeros) - 4):
-        # Verifica se os próximos 4 números formam uma sequência
-        if numeros[i+4] == numeros[i] + 4:
-            return True, numeros[i:i+5]
-    # Verifica se há 5 cartas do mesmo naipe
+    numeros = [int(carta[0]) for carta in cartas_sorteadas_total]
+    
+    # Verificar se há 5 cartas do mesmo naipe
     contador_naipes = Counter(naipes)
     for naipe, contador in contador_naipes.items():
         if contador >= 5:
-            # Verifica se as cartas formam uma sequência Royal Flush
+            # Filtrar cartas do mesmo naipe
             cartas_do_naipe = [carta for carta in cartas_sorteadas_total if carta[1] == naipe]
             numeros_do_naipe = sorted(int(carta[0]) for carta in cartas_do_naipe)
-            if all(numero in numeros_do_naipe for numero in numeros):
-                return True, naipe
+            
+            # Verificar se há uma sequência de 5 cartas
+            for i in range(len(numeros_do_naipe) - 4):
+                if numeros_do_naipe[i+4] == numeros_do_naipe[i] + 4:
+                    return True, naipe  # Retorna True e o naipe do Straight Flush
+    
+    # Se não encontrar um Straight Flush
     return False, None
 
 def verificar_combinacoes():
@@ -83,13 +86,13 @@ def verificar_combinacoes():
     
     tem_royal_flush, naipe = verificar_royal_flush(cartas_sorteadas_total)
     if tem_royal_flush:
-        messagebox.showinfo("Royal Flush", f"Royal Flush no naipe {naipe}!")
+        messagebox.showinfo("Royal Flush", f"Royal Flush")
         reiniciar_jogo()
         return
     
     tem_straight_flush, naipe = verificar_straight_flush(cartas_sorteadas_total)
     if tem_straight_flush:
-        messagebox.showinfo("Straight Flush", f"Straight Flush no naipe {naipe}!")
+        messagebox.showinfo("Straight Flush", "Straight Flush!")
         reiniciar_jogo()
         return
     for quadra, contadornu in contador_numeros.items():
@@ -183,7 +186,7 @@ def sortear_cartas():
             widget.destroy()
 
         # Sortear 2 cartas para a mão
-        cartas_sorteadas_mao = random.sample(cartas_disponiveis, 2)
+        cartas_sorteadas = random.sample(cartas_disponiveis, 2)
         frame_alvo = frame_cartas_mao
 
     elif etapa_sorteio == 1:
@@ -203,58 +206,11 @@ def sortear_cartas():
         verificar_combinacoes()
         return
 
-
-        # Verifica se tem Flush
-
-
-        # Verifica se tem Sequencia
-
-        # Verifica se tem Trio
-        for trio, contadornu in contador_numeros.items():
-            if contadornu == 3:
-                print('Trio')
-                # Reiniciar o sorteio
-                etapa_sorteio = 0
-                cartas_sorteadas_total = []  # Reiniciar as cartas sorteadas
-                return True, trio
-
-        # Verifica se tem dois pares
-        pares = 0
-        for doispares, contadornu in contador_numeros.items():
-            if contadornu == 2:
-                pares += 1
-        if pares >= 2:
-            print('Dois pares')
-            # Reiniciar o sorteio
-            etapa_sorteio = 0
-            cartas_sorteadas_total = []  # Reiniciar as cartas sorteadas
-            return True, "Dois pares"
-
-        # Verifica se tem um par
-        for umpar, contadornu in contador_numeros.items():
-            if contadornu == 2:
-                print('Um par')
-                # Reiniciar o sorteio
-                etapa_sorteio = 0
-                cartas_sorteadas_total = []  # Reiniciar as cartas sorteadas
-                return True, umpar
-
-        # Reiniciar o sorteio
-        etapa_sorteio = 0
-        cartas_sorteadas_total = []  # Reiniciar as cartas sorteadas
-        # Se nenhuma combinação for encontrada
-        return False, None     
-
-
- 
-
-
-    
     # Adicionar as cartas sorteadas à lista global
-    cartas_sorteadas_total.extend(cartas_sorteadas, cartas_sorteadas_mao)
+    cartas_sorteadas_total.extend(cartas_sorteadas)
     
     # Exibir as cartas sorteadas
-    for carta in cartas_sorteadas and cartas_sorteadas_mao:
+    for carta in cartas_sorteadas:
         # Converter o binário em imagem
         imagem_bytes = carta[2]
         imagem = Image.open(io.BytesIO(imagem_bytes))
